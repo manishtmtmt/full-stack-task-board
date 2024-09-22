@@ -1,12 +1,13 @@
 import { Status, Task } from "@prisma/client";
 import type {
   ActionFunctionArgs,
+  LoaderFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { ObjectId } from "bson";
+import { ObjectId } from "mongodb";
 import React, { useState } from "react";
 
 import { Header } from "~/components/Header";
@@ -30,10 +31,10 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const boardId = params.boardId;
+export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
+  const boardId: string = params.boardId!;
 
-  if (!ObjectId.isValid(boardId!)) {
+  if (!ObjectId.isValid(boardId)) {
     const taskBoard = await createTaskBoard();
     return redirect(`/${taskBoard.id}`);
   }
